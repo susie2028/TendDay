@@ -3,12 +3,12 @@
   const U = TD.util;
 
   const ROUTES = [
-    { id: 'home', label: 'Today' },
-    { id: 'todo', label: 'Tasks' },
-    { id: 'habits', label: 'Habits' },
-    { id: 'notes', label: 'Notes' },
-    { id: 'focus', label: 'Focus' },
-    { id: 'glimmers', label: 'Glimmers' },
+    { id: 'home', label: 'Today', icon: 'sun' },
+    { id: 'todo', label: 'Tasks', icon: 'todo' },
+    { id: 'habits', label: 'Habits', icon: 'repeat' },
+    { id: 'notes', label: 'Notes', icon: 'note' },
+    { id: 'focus', label: 'Focus', icon: 'timer' },
+    { id: 'glimmers', label: 'Glimmers', icon: 'gift' },
   ];
 
   TD.state = {
@@ -40,7 +40,7 @@
     document.getElementById('nav').innerHTML = `
       <div class="nav-top"><b>TendDay</b><span>${s.todos.filter((t) => !t.done).length} open</span></div>
       ${ROUTES.map(
-        (r) => `<a href="#${r.id}" class="${r.id === cur ? 'active' : ''}" ${r.id === cur ? 'aria-current="page"' : ''}><span>${r.label}</span></a>`
+        (r) => `<a href="#${r.id}" class="${r.id === cur ? 'active' : ''}" ${r.id === cur ? 'aria-current="page"' : ''} aria-label="${r.label}"><i class="nav-ic">${TD.icon(r.icon, 23)}</i><span>${r.label}</span></a>`
       ).join('')}
       <hr>
       <a href="#" data-action="open-settings"><span>Settings</span></a>`;
