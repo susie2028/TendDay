@@ -6,7 +6,8 @@
   TD.views.todoItem = (t, showDate) => `
     <li class="todo ${t.done ? 'done' : ''}" style="--c:${M.catColor(t.categoryId)}">
       <button class="check" data-action="toggle-todo" data-id="${t.id}" aria-pressed="${t.done}" aria-label="${esc(t.text)}">${icon('check', 11)}</button>
-      <button class="todo-text" data-action="todo-menu" data-id="${t.id}">${esc(t.text)}${showDate ? `<span class="todo-date">${U.fmtShort(t.date)}</span>` : ''}</button>
+      <button class="todo-text" data-action="todo-edit" data-id="${t.id}">${esc(t.text)}${showDate ? `<span class="todo-date">${U.fmtShort(t.date)}</span>` : ''}</button>
+      <button class="icon-btn todo-more" data-action="todo-menu" data-id="${t.id}" aria-label="More">${icon('more', 15)}</button>
     </li>`;
 
   function dayStamp(d, sel, today, withLeft) {
@@ -128,7 +129,7 @@
     const t = M.todo(el.dataset.id);
     if (!t) return;
     const today = U.today();
-    const items = [{ label: 'Edit', run: () => TD.ui.prompt('Edit task', { value: t.text }, (v) => M.updateTodo(t.id, { text: v })) }];
+    const items = [];
     if (t.date !== today) items.push({ label: 'Move to today', run: () => M.moveTodo(t.id, today) });
     items.push(
       { label: 'Tomorrow', run: () => M.moveTodo(t.id, U.addDays(t.date, 1)) },
@@ -137,6 +138,34 @@
       { label: 'Delete', danger: true, run: () => M.removeTodo(t.id) }
     );
     TD.ui.menu('Task', items);
+  };
+
+  /* 글자를 누르면 그 자리에서 바로 고쳐요. Enter·바깥 누르면 저장, Esc는 취소 */
+  A['todo-edit'] = (el) => {
+    const t = M.todo(el.dataset.id);
+    if (!t) return;
+    const input = document.createElement('input');
+    input.className = 'todo-input';
+    input.value = t.text;
+    input.maxLength = 200;
+    input.setAttribute('aria-label', 'Edit task');
+    el.replaceWith(input);
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+    let done = false;
+    const finish = (save) => {
+      if (done) return;
+      done = true;
+      const v = input.value.trim();
+      if (save && v && v !== t.text) M.updateTodo(t.id, { text: v });
+      else TD.app.render();
+    };
+    input.addEventListener('keydown', (e) => {
+      if (e.isComposing || e.keyCode === 229) return;
+      if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); finish(false); }
+    });
+    input.addEventListener('blur', () => finish(true));
   };
 
   function pickDate(t) {

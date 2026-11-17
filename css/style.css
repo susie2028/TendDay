@@ -11,7 +11,7 @@
   --accent: #56633F;
   --accent-soft: #DCE0D2;
   --danger: #B4553F;
-  --sans: "Newsreader", "Noto Serif KR", Georgia, serif;
+  --sans: "Newsreader", "TD KR", Georgia, serif;
   --mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 html[data-ink="blue"] { --text: #2F4E8F; --text-2: #5F739C; --accent: #3F5F9E; --accent-soft: #DCE2EE; }
@@ -107,6 +107,9 @@ h1, h2, h3, p { margin: 0; }
 .todo.done .check { background: var(--c); color: var(--panel); }
 .check.ghost { border-style: dashed; }
 .todo-text { flex: 1; text-align: left; font-size: 14.5px; overflow-wrap: anywhere; }
+.todo-input { flex: 1; min-width: 0; font: inherit; font-size: 14.5px; padding: 0 0 1px; margin: 0; border: 0; border-bottom: 1px solid var(--text-3); background: transparent; outline: none; color: var(--text); }
+.todo-more { flex: 0 0 auto; width: 24px; height: 22px; margin-top: -1px; color: var(--text-3); opacity: 0; }
+.todo:hover .todo-more, .todo-more:focus-visible { opacity: 1; }
 .todo.done .todo-text { color: var(--text-3); text-decoration: line-through; }
 .todo-date { margin-left: 6px; font-family: var(--mono); font-size: 11px; color: var(--text-3); }
 .add-input { flex: 1; border: 0; border-bottom: 1px solid var(--text-3); background: transparent; outline: none; padding: 0 0 2px; }
@@ -311,7 +314,8 @@ textarea.input { height: auto; min-height: 90px; padding: 8px 10px; resize: vert
   .nav-gear { display: inline-grid; }
 
   .input, textarea, .composer textarea, .add-input { font-size: 16px; }
-  .todo-text, .habit-name { font-size: 16px; }
+  .todo-text, .habit-name, .todo-input { font-size: 16px; }
+  .todo-more { opacity: 1; width: 32px; height: 28px; margin-top: -3px; }
   .check { width: 20px; height: 20px; margin-top: 2px; }
   .hcheck { width: 22px; height: 22px; }
   .todo { padding: 7px 0; }
