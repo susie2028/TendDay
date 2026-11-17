@@ -54,6 +54,37 @@
       ${list.length ? `<p class="month-sum">${doneN}/${list.length} done · ${fullN} full days</p>` : ''}`;
   }
 
+  /* 주간 보드: 월~일을 한눈에 크게 */
+  function board(sel, today) {
+    const ws = U.weekStart(sel);
+    const days = Array.from({ length: 7 }, (_, i) => U.addDays(ws, i));
+    const cats = M.categories();
+    const cur = cats.find((c) => c.id === TD.state.boardCat) || cats[0];
+    const we = days[6];
+    const range = `${U.fmtShort(ws)} – ${ws.slice(5, 7) === we.slice(5, 7) ? U.parse(we).getDate() : U.fmtShort(we)}`;
+    const col = (d) => {
+      const list = M.todosOn(d);
+      const left = list.filter((t) => !t.done).length;
+      const dt = U.parse(d);
+      return `
+        <section class="panel bday ${d === today ? 'today' : ''}">
+          <div class="ph"><span><b>${U.DOW[dt.getDay()]}</b> ${dt.getDate()}</span><span class="r">${list.length ? (left ? left : 'done') : ''}</span></div>
+          <div class="pb">
+            <ul>${list.map((t) => TD.views.todoItem(t)).join('')}</ul>
+            <input class="board-add" data-enter="board-add" data-date="${d}" maxlength="200" placeholder="+" aria-label="Add task on ${U.fmtLong(d)}">
+          </div>
+        </section>`;
+    };
+    return `
+      <div class="board-bar">
+        <button class="icon-btn" data-action="week" data-n="-7" aria-label="Previous week">${icon('left', 15)}</button>
+        <span class="board-range">${range}</span>
+        <button class="icon-btn" data-action="week" data-n="7" aria-label="Next week">${icon('right', 15)}</button>
+        ${cats.length > 1 ? `<div class="board-cats"><span>add to</span>${cats.map((c) => `<button class="cat-pill ${c.id === (cur && cur.id) ? 'on' : ''}" style="--c:${TD.COLORS[c.color] || TD.COLORS.gray}" data-action="board-cat" data-id="${c.id}">${esc(c.name)}</button>`).join('')}</div>` : ''}
+      </div>
+      <div class="board">${days.map(col).join('')}</div>`;
+  }
+
   TD.views.todo = () => {
     const sel = TD.state.todoDate;
     const today = U.today();
@@ -95,10 +126,12 @@
         <div class="pb">${cats.length ? catBlocks : `<button class="btn" data-action="cat-new">Add category</button>`}</div>
       </section>
     `;
+    const showToday = mode === 'board' ? U.weekStart(sel) !== U.weekStart(today) : sel !== today;
     const actions = `
-      ${sel !== today ? `<button class="btn" data-action="go-today">Today</button>` : ''}
-      <div class="seg"><button class="${mode === 'week' ? 'on' : ''}" data-action="todo-view" data-v="week">Week</button><button class="${mode === 'month' ? 'on' : ''}" data-action="todo-view" data-v="month">Month</button></div>
+      ${showToday ? `<button class="btn" data-action="go-today">Today</button>` : ''}
+      <div class="seg"><button class="${mode === 'week' ? 'on' : ''}" data-action="todo-view" data-v="week">Week</button><button class="${mode === 'month' ? 'on' : ''}" data-action="todo-view" data-v="month">Month</button><button class="${mode === 'board' ? 'on' : ''}" data-action="todo-view" data-v="board">Board</button></div>
       <button class="btn" data-action="edit-cats">Categories</button>`;
+    if (mode === 'board') return { title: 'Tasks', actions, layout: 'full', left: board(sel, today), right: '' };
     return { title: 'Tasks', actions, left, right };
   };
 
@@ -110,6 +143,17 @@
   A['go-today'] = () => { TD.state.todoDate = U.today(); TD.app.render(); };
   A['todo-view'] = (el) => { TD.state.todoView = el.dataset.v; TD.app.render(); };
 
+  A['board-cat'] = (el) => { TD.state.boardCat = el.dataset.id; TD.app.render(); };
+  A['board-add'] = (el) => {
+    const text = el.value.trim();
+    if (!text) return;
+    const cats = M.categories();
+    const cat = cats.find((c) => c.id === TD.state.boardCat) || cats[0];
+    const date = el.dataset.date;
+    M.addTodo(text, date, cat ? cat.id : null);
+    const next = document.querySelector(`.board-add[data-date="${date}"]`);
+    if (next) next.focus({ preventScroll: true });
+  };
   A['add-todo-open'] = (el) => { TD.state.addingCat = el.dataset.cat; TD.app.render(); };
   A['add-todo'] = (el) => { const text = el.value.trim(); if (text) M.addTodo(text, TD.state.todoDate, el.dataset.cat); };
   A['add-input-escape'] = () => { TD.state.addingCat = null; TD.app.render(); };

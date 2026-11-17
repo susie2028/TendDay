@@ -8,7 +8,7 @@
     return `
       <li class="note ${n.hidden ? 'hidden' : ''}">
         <div class="body">
-          <p class="text">${esc(n.text)}</p>
+          <p class="text" data-action="note-edit" data-id="${n.id}">${esc(n.text)}</p>
           <p class="meta"><span>${U.fmtCreated(n.createdAt)}</span>${isMind && n.pinned ? '<span>pinned</span>' : ''}${n.hidden ? '<span>hidden</span>' : ''}</p>
         </div>
         ${isMind ? `<button class="icon-btn pin-btn ${n.pinned ? 'on' : ''}" data-action="note-pin" data-id="${n.id}" aria-pressed="${n.pinned}" aria-label="Pin">${icon('pin', 15)}</button>` : ''}
@@ -44,10 +44,39 @@
     M.addNote(text, TD.state.notesTab);
   };
   A['note-pin'] = (el) => { if (!M.togglePin(el.dataset.id)) TD.ui.toast(`Max ${M.MAX_PINNED} pinned`); };
+  /* 글자를 누르면 그 자리에서 고쳐요. 바깥 누르거나 ⌘Enter면 저장, Esc는 취소 */
+  A['note-edit'] = (el) => {
+    const n = M.note(el.dataset.id);
+    if (!n) return;
+    const ta = document.createElement('textarea');
+    ta.className = 'note-input';
+    ta.value = n.text;
+    ta.maxLength = 500;
+    ta.setAttribute('aria-label', 'Edit');
+    const fit = () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; };
+    el.replaceWith(ta);
+    fit();
+    ta.focus();
+    ta.setSelectionRange(ta.value.length, ta.value.length);
+    let done = false;
+    const finish = (save) => {
+      if (done) return;
+      done = true;
+      const v = ta.value.trim();
+      if (save && v && v !== n.text) M.updateNote(n.id, { text: v });
+      else TD.app.render();
+    };
+    ta.addEventListener('input', fit);
+    ta.addEventListener('keydown', (e) => {
+      if (e.isComposing || e.keyCode === 229) return;
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); finish(true); }
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); finish(false); }
+    });
+    ta.addEventListener('blur', () => finish(true));
+  };
   A['note-menu'] = (el) => {
     const n = M.note(el.dataset.id);
     TD.ui.menu(n.kind === 'message' ? 'Note to self' : 'Principle', [
-      { label: 'Edit', run: () => TD.ui.prompt('Edit', { value: n.text, multiline: true }, (v) => M.updateNote(n.id, { text: v })) },
       { label: n.hidden ? 'Show' : 'Hide', run: () => M.updateNote(n.id, { hidden: !n.hidden }) },
       { label: 'Delete', danger: true, run: () => TD.ui.confirm('Delete', 'Delete this?', 'Delete', () => M.removeNote(n.id)) },
     ]);
