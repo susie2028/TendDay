@@ -11,8 +11,8 @@
     if (!S.user)
       return `<div class="field"><span class="label"><span>Sync</span><span>signed out</span></span>
           <input class="input" id="sy-email" type="email" placeholder="Email" autocomplete="email">
-          <input class="input" id="sy-pass" type="password" placeholder="Password (6+ characters)" autocomplete="current-password">
-          <div class="row"><button class="btn" style="flex:1" data-action="sy-signup">Create account</button><button class="btn primary" style="flex:1" data-action="sy-signin">Sign in</button></div>
+          <input class="input" id="sy-pass" type="password" placeholder="Password" autocomplete="current-password">
+          <button class="btn primary" data-action="sy-signin">Sign in</button>
           ${S.error ? `<span class="help">${esc(S.error)}</span>` : ''}
         </div>`;
     const when = S.lastSync ? S.lastSync.toTimeString().slice(0, 5) : '—';
@@ -53,16 +53,6 @@
     if (!c) return;
     el.disabled = true;
     try { await TD.sync.signIn(...c); } catch (e) { TD.ui.toast(e.message || 'Sign in failed'); el.disabled = false; }
-  };
-  A['sy-signup'] = async (el) => {
-    const c = creds();
-    if (!c) return;
-    el.disabled = true;
-    try {
-      const ok = await TD.sync.signUp(...c);
-      if (!ok) TD.ui.toast('Check your email to confirm, then sign in');
-    } catch (e) { TD.ui.toast(e.message || 'Sign up failed'); }
-    el.disabled = false;
   };
   A['sy-out'] = () => TD.sync.signOut();
   A['sy-now'] = () => TD.sync.syncNow();
