@@ -24,7 +24,7 @@
         <div class="ph"><span>${TD.t('write')}</span>${tab === 'mindset' ? `<span class="r">${TD.t('pinned {n}/{m}', { n: M.pinnedMindsets().length, m: M.MAX_PINNED })}</span>` : ''}</div>
         <div class="pb">
           <textarea id="note-input" data-enter="note-add" maxlength="500" aria-label="Write"></textarea>
-          <div class="foot"><span>⌘ + Enter</span><button class="btn primary" data-action="note-add">${TD.t('Save')}</button></div>
+          <div class="foot"><span></span><button class="btn primary" data-action="note-add">${TD.t('Save')}</button></div>
         </div>
       </section>`;
     const right = `

@@ -63,9 +63,7 @@
           <div class="sheet ${o.wide ? 'wide' : ''} ${o.small ? 'small' : ''}" role="dialog" aria-modal="true" aria-label="${esc(o.title)}">
             <div class="sheet-head">
               <span>${esc(o.title)}</span>
-              ${o.small
-                ? `<button class="x" data-close aria-label="${TD.t('Close')}">${TD.icon('close', 16)}</button>`
-                : `<button class="close" data-close aria-label="${TD.t('Close')}"><span class="key">Esc</span>${TD.t('Close')} ×</button>`}
+              <button class="x" data-close aria-label="${TD.t('Close')}">${TD.icon('close', 16)}</button>
             </div>
             <div class="sheet-body">${body}</div>
           </div>
