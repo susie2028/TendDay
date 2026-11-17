@@ -31,6 +31,13 @@
   M.updateTodo = (id, patch) => S.update((s) => Object.assign(s.todos.find((x) => x.id === id), patch));
   M.moveTodo = (id, date) => M.updateTodo(id, { date, order: Date.now() });
   M.removeTodo = (id) => S.update((s) => (s.todos = s.todos.filter((x) => x.id !== id)));
+  /* ---------- 주간 보드 (큰 할 일 덩어리, 세부 할 일과 따로) ---------- */
+  M.chunk = (id) => (S.get().board || []).find((x) => x.id === id);
+  M.chunksOn = (date) => (S.get().board || []).filter((x) => x.date === date).sort((a, b) => a.order - b.order);
+  M.addChunk = (text, date) =>
+    S.update((s) => (s.board = s.board || []).push({ id: U.uid(), text, date, color: null, done: false, order: Date.now() }));
+  M.updateChunk = (id, patch) => S.update((s) => Object.assign(s.board.find((x) => x.id === id), patch));
+  M.removeChunk = (id) => S.update((s) => (s.board = s.board.filter((x) => x.id !== id)));
   /** 오늘 이전 날짜인데 아직 못 한 일 */
   M.overdue = () => {
     const t = U.today();
