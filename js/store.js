@@ -6,9 +6,9 @@
   const defaults = () => ({
     version: 1,
     categories: [
-      { id: 'c-work', name: 'Work', color: 'brown', order: 0 },
-      { id: 'c-study', name: 'Study', color: 'green', order: 1 },
-      { id: 'c-life', name: 'Life', color: 'orange', order: 2 },
+      { id: 'c-work', name: '일', color: 'brown', order: 0 },
+      { id: 'c-study', name: '공부', color: 'green', order: 1 },
+      { id: 'c-life', name: '생활', color: 'orange', order: 2 },
     ],
     todos: [],
     habits: [],
@@ -38,7 +38,7 @@
       localStorage.setItem(KEY, JSON.stringify(state));
     } catch (e) {
       console.error('저장하지 못했어요', e);
-      TD.ui && TD.ui.toast('Could not save — storage full');
+      TD.ui && TD.ui.toast(TD.t('Could not save — storage full'));
     }
     listeners.forEach((fn) => fn());
   }

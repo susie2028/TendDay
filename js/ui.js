@@ -64,8 +64,8 @@
             <div class="sheet-head">
               <span>${esc(o.title)}</span>
               ${o.small
-                ? `<button class="x" data-close aria-label="Close">${TD.icon('close', 16)}</button>`
-                : `<button class="close" data-close aria-label="Close"><span class="key">Esc</span>Close ×</button>`}
+                ? `<button class="x" data-close aria-label="${TD.t('Close')}">${TD.icon('close', 16)}</button>`
+                : `<button class="close" data-close aria-label="${TD.t('Close')}"><span class="key">Esc</span>${TD.t('Close')} ×</button>`}
             </div>
             <div class="sheet-body">${body}</div>
           </div>
@@ -117,7 +117,7 @@
         title,
         body: `<p class="help">${esc(message)}</p>
           <div class="sheet-foot">
-            <button class="btn" data-close>Cancel</button>
+            <button class="btn" data-close>${TD.t('Cancel')}</button>
             <button class="btn danger" data-ok>${esc(okLabel)}</button>
           </div>`,
         onMount(sheet) {
@@ -130,7 +130,7 @@
     },
 
     /** 한 줄 또는 여러 줄 입력창 */
-    prompt(title, { value = '', placeholder = '', multiline = false, okLabel = 'Save' }, onOk) {
+    prompt(title, { value = '', placeholder = '', multiline = false, okLabel = TD.t('Save') }, onOk) {
       TD.ui.modal({
         title,
         body: `${
@@ -138,7 +138,7 @@
             ? `<textarea class="input" autofocus placeholder="${esc(placeholder)}" maxlength="1000">${esc(value)}</textarea>`
             : `<input class="input" autofocus value="${esc(value)}" placeholder="${esc(placeholder)}" maxlength="200">`
         }
-          <div class="sheet-foot"><button class="btn" data-close>Cancel</button><button class="btn primary" data-ok>${esc(okLabel)}</button></div>`,
+          <div class="sheet-foot"><button class="btn" data-close>${TD.t('Cancel')}</button><button class="btn primary" data-ok>${esc(okLabel)}</button></div>`,
         onMount(sheet) {
           const inp = sheet.querySelector('.input');
           const ok = () => {

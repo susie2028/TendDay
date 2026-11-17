@@ -69,7 +69,8 @@
   };
 
   /* ---------- 습관 ---------- */
-  M.TIMES = { morning: 'Morning', any: 'Anytime', evening: 'Evening' };
+  const TIMES = { morning: 'Morning', any: 'Anytime', evening: 'Evening' };
+  Object.defineProperty(M, 'TIMES', { get: () => ({ morning: TD.t(TIMES.morning), any: TD.t(TIMES.any), evening: TD.t(TIMES.evening) }) });
   const TIME_ORDER = { morning: 0, any: 1, evening: 2 };
 
   M.habit = (id) => S.get().habits.find((h) => h.id === id);
@@ -117,9 +118,9 @@
     });
   M.daysLabel = (days) => {
     const set = [...days].sort().join('');
-    if (set === '0123456') return 'Daily';
-    if (set === '12345') return 'Weekdays';
-    if (set === '06') return 'Weekends';
+    if (set === '0123456') return TD.t('Daily');
+    if (set === '12345') return TD.t('Weekdays');
+    if (set === '06') return TD.t('Weekends');
     return [1, 2, 3, 4, 5, 6, 0].filter((d) => days.includes(d)).map((d) => U.DOW[d]).join(' ');
   };
 

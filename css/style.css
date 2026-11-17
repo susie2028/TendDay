@@ -12,7 +12,7 @@
   --accent-soft: #DCE0D2;
   --danger: #B4553F;
   --sans: "Newsreader", "TD KR", Georgia, serif;
-  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --mono: "IBM Plex Mono", "TD KR", ui-monospace, monospace;
 }
 html[data-ink="blue"] { --text: #2F4E8F; --text-2: #5F739C; --accent: #3F5F9E; --accent-soft: #DCE2EE; }
 html[data-ink="brown"] { --text: #4A3628; --text-2: #7A6858; --accent: #7A5A44; --accent-soft: #E7DED5; }

@@ -7,7 +7,7 @@
     <li class="todo ${t.done ? 'done' : ''}" data-id="${t.id}" style="--c:${M.catColor(t.categoryId)}">
       <button class="check" data-action="toggle-todo" data-id="${t.id}" aria-pressed="${t.done}" aria-label="${esc(t.text)}">${icon('check', 11)}</button>
       <button class="todo-text" data-action="todo-edit" data-id="${t.id}">${esc(t.text)}${showDate ? `<span class="todo-date">${U.fmtShort(t.date)}</span>` : ''}</button>
-      <button class="icon-btn todo-more" data-action="todo-menu" data-id="${t.id}" aria-label="More">${icon('more', 15)}</button>
+      <button class="icon-btn todo-more" data-action="todo-menu" data-id="${t.id}" aria-label="${TD.t('More')}">${icon('more', 15)}</button>
     </li>`;
 
   function dayStamp(d, sel, today, withLeft) {
@@ -19,7 +19,7 @@
         ${withLeft ? `<span class="day-left">${st.left || ''}</span>` : ''}
       </button>`;
   }
-  const DOW_HEAD = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d) => `<span class="dh">${d}</span>`).join('');
+  const DOW_HEAD = () => U.DOW_HEAD.map((d) => `<span class="dh">${d}</span>`).join('');
   const ym = (s) => U.fmtMonth(s);
 
   function weekCal(sel, today) {
@@ -27,11 +27,11 @@
     const days = Array.from({ length: 7 }, (_, i) => U.addDays(ws, i));
     return `
       <div class="cal-nav">
-        <button class="icon-btn" data-action="week" data-n="-7" aria-label="Previous week">${icon('left', 15)}</button>
+        <button class="icon-btn" data-action="week" data-n="-7" aria-label="${TD.t('Previous week')}">${icon('left', 15)}</button>
         <span>${ym(sel)}</span>
-        <button class="icon-btn" data-action="week" data-n="7" aria-label="Next week">${icon('right', 15)}</button>
+        <button class="icon-btn" data-action="week" data-n="7" aria-label="${TD.t('Next week')}">${icon('right', 15)}</button>
       </div>
-      <div class="days">${DOW_HEAD}${days.map((d) => dayStamp(d, sel, today, true)).join('')}</div>`;
+      <div class="days">${DOW_HEAD()}${days.map((d) => dayStamp(d, sel, today, true)).join('')}</div>`;
   }
 
   function monthCal(sel, today) {
@@ -46,12 +46,12 @@
     const fullN = [...new Set(list.map((t) => t.date))].filter((d) => M.dayStatus(d).left === 0).length;
     return `
       <div class="cal-nav">
-        <button class="icon-btn" data-action="month" data-n="-1" aria-label="Previous month">${icon('left', 15)}</button>
+        <button class="icon-btn" data-action="month" data-n="-1" aria-label="${TD.t('Previous month')}">${icon('left', 15)}</button>
         <span>${ym(sel)}</span>
-        <button class="icon-btn" data-action="month" data-n="1" aria-label="Next month">${icon('right', 15)}</button>
+        <button class="icon-btn" data-action="month" data-n="1" aria-label="${TD.t('Next month')}">${icon('right', 15)}</button>
       </div>
-      <div class="days">${DOW_HEAD}${cells}</div>
-      ${list.length ? `<p class="month-sum">${doneN}/${list.length} done · ${fullN} full days</p>` : ''}`;
+      <div class="days">${DOW_HEAD()}${cells}</div>
+      ${list.length ? `<p class="month-sum">${TD.t('{d}/{n} done · {f} full days', { d: doneN, n: list.length, f: fullN })}</p>` : ''}`;
   }
 
   TD.views.todo = () => {
@@ -72,11 +72,11 @@
           <div class="cat" style="--c:${col}" data-cat="${c.id}">
             <div class="cat-head">
               <button class="cat-pill" data-action="cat-quick" data-id="${c.id}">${esc(c.name)}</button>
-              <button class="icon-btn" data-action="add-todo-open" data-cat="${c.id}" aria-label="Add to ${esc(c.name)}">${icon('plus', 14)}</button>
+              <button class="icon-btn" data-action="add-todo-open" data-cat="${c.id}" aria-label="${TD.t('Add to {c}', { c: esc(c.name) })}">${icon('plus', 14)}</button>
             </div>
             <ul class="sort-list" data-cat="${c.id}">
               ${items.map((t) => TD.views.todoItem(t)).join('')}
-              ${adding ? `<li class="todo" style="--c:${col}"><span class="check ghost"></span><input class="add-input" data-enter="add-todo" data-cat="${c.id}" maxlength="200" aria-label="New ${esc(c.name)} task"></li>` : ''}
+              ${adding ? `<li class="todo" style="--c:${col}"><span class="check ghost"></span><input class="add-input" data-enter="add-todo" data-cat="${c.id}" maxlength="200" aria-label="${TD.t('New {c} task', { c: esc(c.name) })}"></li>` : ''}
             </ul>
           </div>`;
       })
@@ -84,24 +84,24 @@
 
     const left = `
       <section class="panel">
-        <div class="ph"><span>${mode === 'month' ? 'month' : 'week'}</span></div>
+        <div class="ph"><span>${TD.t(mode === 'month' ? 'month' : 'week')}</span></div>
         <div class="pb">${mode === 'month' ? monthCal(sel, today) : weekCal(sel, today)}</div>
       </section>
-      ${over.length ? `<div class="row-line"><span>${over.length} overdue</span><button class="btn" data-action="move-overdue">Move to today</button></div>` : ''}
+      ${over.length ? `<div class="row-line"><span>${TD.t('{n} overdue', { n: over.length })}</span><button class="btn" data-action="move-overdue">${TD.t('Move to today')}</button></div>` : ''}
     `;
     const right = `
       <section class="panel">
-        <div class="ph"><span>${U.fmtLong(sel)}${sel === today ? ' · today' : ''}</span></div>
-        <div class="pb">${cats.length ? catBlocks : `<button class="btn" data-action="cat-new">Add category</button>`}</div>
+        <div class="ph"><span>${U.fmtLong(sel)}${sel === today ? ' · ' + TD.t('today') : ''}</span></div>
+        <div class="pb">${cats.length ? catBlocks : `<button class="btn" data-action="cat-new">${TD.t('Add category')}</button>`}</div>
       </section>
     `;
     const showToday = mode === 'board' ? U.weekStart(sel) !== U.weekStart(today) : sel !== today;
     const actions = `
-      ${showToday ? `<button class="btn" data-action="go-today">Today</button>` : ''}
-      <div class="seg"><button class="${mode === 'week' ? 'on' : ''}" data-action="todo-view" data-v="week">Week</button><button class="${mode === 'month' ? 'on' : ''}" data-action="todo-view" data-v="month">Month</button><button class="${mode === 'board' ? 'on' : ''}" data-action="todo-view" data-v="board">Board</button></div>
-      ${mode === 'board' ? '' : `<button class="btn" data-action="edit-cats">Categories</button>`}`;
-    if (mode === 'board') return { title: 'Tasks', actions, layout: 'full', left: TD.views.board(sel, today), right: '' };
-    return { title: 'Tasks', actions, left, right };
+      ${showToday ? `<button class="btn" data-action="go-today">${TD.t('Today')}</button>` : ''}
+      <div class="seg"><button class="${mode === 'week' ? 'on' : ''}" data-action="todo-view" data-v="week">${TD.t('Week')}</button><button class="${mode === 'month' ? 'on' : ''}" data-action="todo-view" data-v="month">${TD.t('Month')}</button><button class="${mode === 'board' ? 'on' : ''}" data-action="todo-view" data-v="board">${TD.t('Board')}</button></div>
+      ${mode === 'board' ? '' : `<button class="btn" data-action="edit-cats">${TD.t('Categories')}</button>`}`;
+    if (mode === 'board') return { title: TD.t('Tasks'), actions, layout: 'full', left: TD.views.board(sel, today), right: '' };
+    return { title: TD.t('Tasks'), actions, left, right };
   };
 
   /* 동작 */
@@ -132,14 +132,14 @@
     if (!t) return;
     const today = U.today();
     const items = [];
-    if (t.date !== today) items.push({ label: 'Move to today', run: () => M.moveTodo(t.id, today) });
+    if (t.date !== today) items.push({ label: TD.t('Move to today'), run: () => M.moveTodo(t.id, today) });
     items.push(
-      { label: 'Tomorrow', run: () => M.moveTodo(t.id, U.addDays(t.date, 1)) },
-      { label: 'Change date', run: () => pickDate(t) },
-      { label: 'Change category', run: () => TD.ui.menu('Category', M.categories().map((c) => ({ label: (c.id === t.categoryId ? '✓ ' : '') + c.name, run: () => M.updateTodo(t.id, { categoryId: c.id }) }))) },
-      { label: 'Delete', danger: true, run: () => M.removeTodo(t.id) }
+      { label: TD.t('Tomorrow'), run: () => M.moveTodo(t.id, U.addDays(t.date, 1)) },
+      { label: TD.t('Change date'), run: () => pickDate(t) },
+      { label: TD.t('Change category'), run: () => TD.ui.menu(TD.t('Category'), M.categories().map((c) => ({ label: (c.id === t.categoryId ? '✓ ' : '') + c.name, run: () => M.updateTodo(t.id, { categoryId: c.id }) }))) },
+      { label: TD.t('Delete'), danger: true, run: () => M.removeTodo(t.id) }
     );
-    TD.ui.menu('Task', items);
+    TD.ui.menu(TD.t('Task'), items);
   };
 
   /* 글자를 누르면 그 자리에서 바로 고쳐요. Enter·바깥 누르면 저장, Esc는 취소 */
@@ -150,7 +150,7 @@
     input.className = 'todo-input';
     input.value = t.text;
     input.maxLength = 200;
-    input.setAttribute('aria-label', 'Edit task');
+    input.setAttribute('aria-label', TD.t('Edit task'));
     el.replaceWith(input);
     input.focus();
     input.setSelectionRange(input.value.length, input.value.length);
@@ -172,9 +172,9 @@
 
   function pickDate(t) {
     TD.ui.modal({
-      title: 'Change date',
+      title: TD.t('Change date'),
       body: `<input type="date" class="input" value="${t.date}" autofocus>
-        <div class="sheet-foot"><button class="btn" data-close>Cancel</button><button class="btn primary" data-ok>Move</button></div>`,
+        <div class="sheet-foot"><button class="btn" data-close>${TD.t('Cancel')}</button><button class="btn primary" data-ok>${TD.t('Move')}</button></div>`,
       onMount(sheet) {
         sheet.querySelector('[data-ok]').addEventListener('click', () => {
           const v = sheet.querySelector('input').value;
@@ -192,22 +192,22 @@
     <div>${M.categories()
       .map((c) => `<button class="cat-row" style="--c:${TD.COLORS[c.color] || TD.COLORS.gray}" data-action="cat-quick" data-id="${c.id}"><span class="dot"></span><span class="name">${esc(c.name)}</span><span class="n">${countIn(c.id)}</span></button>`)
       .join('')}</div>
-    <button class="btn block" data-action="cat-new">${icon('plus', 14)} Add</button>`;
-  A['edit-cats'] = () => TD.ui.modal({ title: 'Categories', body: catList });
+    <button class="btn block" data-action="cat-new">${icon('plus', 14)} ${TD.t('Add')}</button>`;
+  A['edit-cats'] = () => TD.ui.modal({ title: TD.t('Categories'), body: catList });
 
   function catForm(c) {
     const used = M.categories().map((x) => x.color);
     const f = c ? { name: c.name, color: c.color } : { name: '', color: Object.keys(TD.COLORS).find((k) => !used.includes(k)) || 'green' };
     TD.ui.modal({
-      title: c ? 'Edit category' : 'New category',
+      title: TD.t(c ? 'Edit category' : 'New category'),
       body: `
-        <div class="field"><label for="cf-name">Name</label><input id="cf-name" class="input" value="${esc(f.name)}" maxlength="12" autofocus></div>
-        <div class="field"><span class="label">Color</span><div class="swatches">${Object.entries(TD.COLORS)
-          .map(([k, v]) => `<button class="swatch" style="--c:${v}" data-color="${k}" aria-label="${TD.COLOR_NAMES[k]}" title="${TD.COLOR_NAMES[k]}"></button>`)
+        <div class="field"><label for="cf-name">${TD.t('Name')}</label><input id="cf-name" class="input" value="${esc(f.name)}" maxlength="12" autofocus></div>
+        <div class="field"><span class="label">${TD.t('Color')}</span><div class="swatches">${Object.entries(TD.COLORS)
+          .map(([k, v]) => `<button class="swatch" style="--c:${v}" data-color="${k}" aria-label="${TD.t(TD.COLOR_NAMES[k])}" title="${TD.t(TD.COLOR_NAMES[k])}"></button>`)
           .join('')}</div></div>
         <div class="sheet-foot">
-          ${c ? `<button class="btn danger" data-del>Delete</button>` : `<button class="btn" data-close>Cancel</button>`}
-          <button class="btn primary" data-ok>${c ? 'Save' : 'Add'}</button>
+          ${c ? `<button class="btn danger" data-del>${TD.t('Delete')}</button>` : `<button class="btn" data-close>${TD.t('Cancel')}</button>`}
+          <button class="btn primary" data-ok>${TD.t(c ? 'Save' : 'Add')}</button>
         </div>`,
       onMount(sheet) {
         const name = sheet.querySelector('#cf-name');
@@ -228,7 +228,7 @@
           del.addEventListener('click', () => {
             const n = countIn(c.id);
             if (!n) return TD.ui.close(), M.removeCategory(c.id);
-            TD.ui.confirm('Delete category', `'${c.name}' and its ${n} tasks will be deleted.`, 'Delete', () => M.removeCategory(c.id));
+            TD.ui.confirm(TD.t('Delete category'), TD.t("'{c}' and its {n} tasks will be deleted.", { c: c.name, n }), TD.t('Delete'), () => M.removeCategory(c.id));
           });
       },
     });

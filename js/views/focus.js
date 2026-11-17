@@ -82,11 +82,11 @@
     if (st.mode === 'focus') {
       setMode('brk', live);
       logFocus(conf().focus);
-      if (live) { chime(); notify(`Focus done. ${conf().brk} min break.`); TD.ui.toast('Focus done — break time'); }
+      if (live) { chime(); notify(TD.t('Focus done. {n} min break.', { n: conf().brk })); TD.ui.toast(TD.t('Focus done — break time')); }
     } else {
       setMode('focus', false);
       TD.app.render();
-      if (live) { chime(); notify('Break over.'); TD.ui.toast('Break over'); }
+      if (live) { chime(); notify(TD.t('Break over.')); TD.ui.toast(TD.t('Break over')); }
     }
   }
 
@@ -107,7 +107,7 @@
       const bar = document.getElementById('pomo-bar');
       if (bar) bar.style.width = `${Math.max(0, 1 - left / total(st.mode)) * 100}%`;
     }
-    if (st.running) document.title = `${fmt(left)} · ${st.mode === 'focus' ? 'Focus' : 'Break'}`;
+    if (st.running) document.title = `${fmt(left)} · ${TD.t(st.mode === 'focus' ? 'Focus' : 'Break')}`;
   }
   setInterval(tick, 500);
   document.addEventListener('visibilitychange', tick);
@@ -116,7 +116,7 @@
     <div class="stepper">
       <button class="icon-btn" data-action="pomo-step" data-key="${key}" data-d="-5" aria-label="Minus 5">−5</button>
       <button class="icon-btn" data-action="pomo-step" data-key="${key}" data-d="-1" aria-label="Minus 1">−</button>
-      <input class="input num" type="number" inputmode="numeric" min="${LIMITS[key][0]}" max="${LIMITS[key][1]}" value="${val}" data-change="pomo-set" data-key="${key}" aria-label="${key === 'focus' ? 'Focus' : 'Break'} minutes">
+      <input class="input num" type="number" inputmode="numeric" min="${LIMITS[key][0]}" max="${LIMITS[key][1]}" value="${val}" data-change="pomo-set" data-key="${key}" aria-label="${TD.t(key === 'focus' ? 'Focus minutes' : 'Break minutes')}">
       <button class="icon-btn" data-action="pomo-step" data-key="${key}" data-d="1" aria-label="Plus 1">+</button>
       <button class="icon-btn" data-action="pomo-step" data-key="${key}" data-d="5" aria-label="Plus 5">+5</button>
     </div>`;
@@ -126,31 +126,31 @@
     const fresh = !st.running && st.left == null;
     const left_ = `
       <section class="panel pomo">
-        <div class="ph"><span>${st.mode === 'focus' ? 'focus' : 'break'}</span><span class="r">${st.mode === 'focus' ? c.focus : c.brk} min</span></div>
+        <div class="ph"><span>${TD.t(st.mode === 'focus' ? 'focus' : 'break')}</span><span class="r">${TD.t('{n} min', { n: st.mode === 'focus' ? c.focus : c.brk })}</span></div>
         <div class="pb">
           <div class="pomo-time" id="pomo-time">${fmt(left)}</div>
           <div class="pomo-track"><div class="pomo-bar" id="pomo-bar" style="width:${Math.max(0, 1 - left / total(st.mode)) * 100}%"></div></div>
           <div class="pomo-btns">
-            <button class="btn primary" data-action="pomo-toggle">${st.running ? 'Pause' : fresh ? 'Start' : 'Resume'}</button>
-            <button class="btn" data-action="pomo-reset" ${fresh ? 'disabled' : ''}>Reset</button>
-            <button class="btn" data-action="pomo-skip">${st.mode === 'focus' ? 'Skip to break' : 'Skip break'}</button>
+            <button class="btn primary" data-action="pomo-toggle">${TD.t(st.running ? 'Pause' : fresh ? 'Start' : 'Resume')}</button>
+            <button class="btn" data-action="pomo-reset" ${fresh ? 'disabled' : ''}>${TD.t('Reset')}</button>
+            <button class="btn" data-action="pomo-skip">${TD.t(st.mode === 'focus' ? 'Skip to break' : 'Skip break')}</button>
           </div>
         </div>
       </section>`;
     const right = `
       <section class="panel">
-        <div class="ph"><span>minutes</span></div>
+        <div class="ph"><span>${TD.t('minutes')}</span></div>
         <div class="pb pomo-set">
-          <div class="field"><span class="label">Focus</span>${stepper('focus', c.focus)}</div>
-          <div class="field"><span class="label">Break</span>${stepper('brk', c.brk)}</div>
-          <p class="help">Break starts on its own after focus.</p>
+          <div class="field"><span class="label">${TD.t('Focus')}</span>${stepper('focus', c.focus)}</div>
+          <div class="field"><span class="label">${TD.t('Break')}</span>${stepper('brk', c.brk)}</div>
+          <p class="help">${TD.t('Break starts on its own after focus.')}</p>
         </div>
       </section>
       <section class="panel">
-        <div class="ph"><span>today</span><span class="r">${log.n} · ${log.min} min</span></div>
-        <div class="pb">${log.n ? `<div class="pomo-dots">${'<i></i>'.repeat(Math.min(log.n, 40))}</div>` : '<p class="empty">No sessions yet</p>'}</div>
+        <div class="ph"><span>${TD.t('today')}</span><span class="r">${TD.t('{n} · {m} min', { n: log.n, m: log.min })}</span></div>
+        <div class="pb">${log.n ? `<div class="pomo-dots">${'<i></i>'.repeat(Math.min(log.n, 40))}</div>` : `<p class="empty">${TD.t('No sessions yet')}</p>`}</div>
       </section>`;
-    return { title: 'Focus', meta: st.running ? (st.mode === 'focus' ? 'focusing' : 'on break') : '', left: left_, right };
+    return { title: TD.t('Focus'), meta: st.running ? TD.t(st.mode === 'focus' ? 'focusing' : 'on break') : '', left: left_, right };
   };
 
   A['pomo-toggle'] = () => { st.running ? pause() : start(); TD.app.render(); };

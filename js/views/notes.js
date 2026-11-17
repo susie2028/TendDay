@@ -9,10 +9,10 @@
       <li class="note ${n.hidden ? 'hidden' : ''}">
         <div class="body">
           <p class="text" data-action="note-edit" data-id="${n.id}">${esc(n.text)}</p>
-          <p class="meta"><span>${U.fmtCreated(n.createdAt)}</span>${isMind && n.pinned ? '<span>pinned</span>' : ''}${n.hidden ? '<span>hidden</span>' : ''}</p>
+          <p class="meta"><span>${U.fmtCreated(n.createdAt)}</span>${isMind && n.pinned ? `<span>${TD.t('pinned')}</span>` : ''}${n.hidden ? `<span>${TD.t('hidden')}</span>` : ''}</p>
         </div>
-        ${isMind ? `<button class="icon-btn pin-btn ${n.pinned ? 'on' : ''}" data-action="note-pin" data-id="${n.id}" aria-pressed="${n.pinned}" aria-label="Pin">${icon('pin', 15)}</button>` : ''}
-        <button class="icon-btn" data-action="note-menu" data-id="${n.id}" aria-label="More">${icon('more', 15)}</button>
+        ${isMind ? `<button class="icon-btn pin-btn ${n.pinned ? 'on' : ''}" data-action="note-pin" data-id="${n.id}" aria-pressed="${n.pinned}" aria-label="${TD.t('Pin')}">${icon('pin', 15)}</button>` : ''}
+        <button class="icon-btn" data-action="note-menu" data-id="${n.id}" aria-label="${TD.t('More')}">${icon('more', 15)}</button>
       </li>`;
   }
 
@@ -21,19 +21,19 @@
     const list = M.notes(tab);
     const left = `
       <section class="panel composer">
-        <div class="ph"><span>write</span>${tab === 'mindset' ? `<span class="r">pinned ${M.pinnedMindsets().length}/${M.MAX_PINNED}</span>` : ''}</div>
+        <div class="ph"><span>${TD.t('write')}</span>${tab === 'mindset' ? `<span class="r">${TD.t('pinned {n}/{m}', { n: M.pinnedMindsets().length, m: M.MAX_PINNED })}</span>` : ''}</div>
         <div class="pb">
           <textarea id="note-input" data-enter="note-add" maxlength="500" aria-label="Write"></textarea>
-          <div class="foot"><span>⌘ + Enter</span><button class="btn primary" data-action="note-add">Save</button></div>
+          <div class="foot"><span>⌘ + Enter</span><button class="btn primary" data-action="note-add">${TD.t('Save')}</button></div>
         </div>
       </section>`;
     const right = `
       <section class="panel">
-        <div class="ph"><span>${tab === 'message' ? 'notes to self' : 'principles'}</span><span>${list.length}</span></div>
-        <div class="pb">${list.length ? `<ul>${list.map(noteItem).join('')}</ul>` : `<p class="empty">Nothing yet</p>`}</div>
+        <div class="ph"><span>${TD.t(tab === 'message' ? 'notes to self' : 'principles')}</span><span>${list.length}</span></div>
+        <div class="pb">${list.length ? `<ul>${list.map(noteItem).join('')}</ul>` : `<p class="empty">${TD.t('Nothing yet')}</p>`}</div>
       </section>`;
-    const actions = `<div class="seg"><button class="${tab === 'message' ? 'on' : ''}" data-action="notes-tab" data-tab="message">Notes to self</button><button class="${tab === 'mindset' ? 'on' : ''}" data-action="notes-tab" data-tab="mindset">Principles</button></div>`;
-    return { title: 'Notes', actions, left, right };
+    const actions = `<div class="seg"><button class="${tab === 'message' ? 'on' : ''}" data-action="notes-tab" data-tab="message">${TD.t('Notes to self')}</button><button class="${tab === 'mindset' ? 'on' : ''}" data-action="notes-tab" data-tab="mindset">${TD.t('Principles')}</button></div>`;
+    return { title: TD.t('Notes'), actions, left, right };
   };
 
   A['notes-tab'] = (el) => { TD.state.notesTab = el.dataset.tab; TD.app.render(); };
@@ -43,7 +43,7 @@
     if (!text) return ta.focus();
     M.addNote(text, TD.state.notesTab);
   };
-  A['note-pin'] = (el) => { if (!M.togglePin(el.dataset.id)) TD.ui.toast(`Max ${M.MAX_PINNED} pinned`); };
+  A['note-pin'] = (el) => { if (!M.togglePin(el.dataset.id)) TD.ui.toast(TD.t('Max {n} pinned', { n: M.MAX_PINNED })); };
   /* 글자를 누르면 그 자리에서 고쳐요. 바깥 누르거나 ⌘Enter면 저장, Esc는 취소 */
   A['note-edit'] = (el) => {
     const n = M.note(el.dataset.id);
@@ -52,7 +52,7 @@
     ta.className = 'note-input';
     ta.value = n.text;
     ta.maxLength = 500;
-    ta.setAttribute('aria-label', 'Edit');
+    ta.setAttribute('aria-label', TD.t('Edit'));
     const fit = () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; };
     el.replaceWith(ta);
     fit();
@@ -76,9 +76,9 @@
   };
   A['note-menu'] = (el) => {
     const n = M.note(el.dataset.id);
-    TD.ui.menu(n.kind === 'message' ? 'Note to self' : 'Principle', [
-      { label: n.hidden ? 'Show' : 'Hide', run: () => M.updateNote(n.id, { hidden: !n.hidden }) },
-      { label: 'Delete', danger: true, run: () => TD.ui.confirm('Delete', 'Delete this?', 'Delete', () => M.removeNote(n.id)) },
+    TD.ui.menu(TD.t(n.kind === 'message' ? 'Note to self' : 'Principle'), [
+      { label: TD.t(n.hidden ? 'Show' : 'Hide'), run: () => M.updateNote(n.id, { hidden: !n.hidden }) },
+      { label: TD.t('Delete'), danger: true, run: () => TD.ui.confirm(TD.t('Delete'), TD.t('Delete this?'), TD.t('Delete'), () => M.removeNote(n.id)) },
     ]);
   };
 })();

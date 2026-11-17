@@ -38,12 +38,12 @@
     const cur = current();
     const s = TD.store.get();
     document.getElementById('nav').innerHTML = `
-      <div class="nav-top"><b>TendDay</b><span>${s.todos.filter((t) => !t.done).length} open</span></div>
+      <div class="nav-top"><b>TendDay</b><span>${TD.t('{n} open', { n: s.todos.filter((t) => !t.done).length })}</span></div>
       ${ROUTES.map(
-        (r) => `<a href="#${r.id}" class="${r.id === cur ? 'active' : ''}" ${r.id === cur ? 'aria-current="page"' : ''} aria-label="${r.label}"><i class="nav-ic">${TD.icon(r.icon, 23)}</i><span>${r.label}</span></a>`
+        (r) => `<a href="#${r.id}" class="${r.id === cur ? 'active' : ''}" ${r.id === cur ? 'aria-current="page"' : ''} aria-label="${TD.t(r.label)}"><i class="nav-ic">${TD.icon(r.icon, 23)}</i><span>${TD.t(r.label)}</span></a>`
       ).join('')}
       <hr>
-      <a href="#" data-action="open-settings"><span>Settings</span></a>`;
+      <a href="#" data-action="open-settings"><span>${TD.t('Settings')}</span></a>`;
   }
 
   function render() {
@@ -60,7 +60,8 @@
     TD.media.hydrate(document.getElementById('main'));
     const add = document.querySelector('#main .add-input');
     if (add) add.focus({ preventScroll: true });
-    document.title = `${ROUTES.find((x) => x.id === r).label} · TendDay`;
+    document.title = `${TD.t(ROUTES.find((x) => x.id === r).label)} · TendDay`;
+    document.documentElement.lang = TD.lang();
   }
   TD.app = { render };
 

@@ -4,8 +4,10 @@ TD.views = {};
 TD.actions = {};
 
 (function () {
-  const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const DOW_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const DOW_KO = ['일', '월', '화', '수', '목', '금', '토'];
   const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const ko = () => !TD.lang || TD.lang() === 'ko';
 
   const pad = (n) => String(n).padStart(2, '0');
   const ymd = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -15,8 +17,9 @@ TD.actions = {};
   };
 
   TD.util = {
-    DOW,
-    MON,
+    get DOW() { return ko() ? DOW_KO : DOW_EN; },
+    /** 월화수목금토일 머리글 */
+    get DOW_HEAD() { return ko() ? ['월', '화', '수', '목', '금', '토', '일'] : ['M', 'T', 'W', 'T', 'F', 'S', 'S']; },
     ymd,
     parse,
     today: () => ymd(),
@@ -37,14 +40,23 @@ TD.actions = {};
     },
     fmtLong(s) {
       const d = parse(s);
-      return `${DOW[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}`;
+      if (ko()) return `${d.getMonth() + 1}월 ${d.getDate()}일 (${DOW_KO[d.getDay()]})`;
+      return `${DOW_EN[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}`;
     },
     fmtShort(s) {
       const d = parse(s);
+      if (ko()) return `${d.getMonth() + 1}월 ${d.getDate()}일`;
       return `${MON[d.getMonth()]} ${d.getDate()}`;
+    },
+    /** 주 범위: 11월 16일 – 22일 / Nov 16 – 22 */
+    fmtRange(a, b) {
+      const x = parse(a), y = parse(b), same = x.getMonth() === y.getMonth();
+      if (ko()) return `${x.getMonth() + 1}월 ${x.getDate()}일 – ${same ? '' : y.getMonth() + 1 + '월 '}${y.getDate()}일`;
+      return `${MON[x.getMonth()]} ${x.getDate()} – ${same ? '' : MON[y.getMonth()] + ' '}${y.getDate()}`;
     },
     fmtMonth(s) {
       const d = parse(s);
+      if (ko()) return `${d.getFullYear()}년 ${d.getMonth() + 1}월`;
       return `${MON[d.getMonth()]} ${d.getFullYear()}`;
     },
     /** ISO 시각 → "11월 17일" */

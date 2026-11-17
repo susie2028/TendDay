@@ -7,8 +7,8 @@
     <div class="chunk ${c.done ? 'done' : ''} ${c.color ? 'tinted' : ''}" data-id="${c.id}" ${c.color ? `style="--c:${TD.COLORS[c.color]}"` : ''}>
       <div class="chunk-text" data-action="chunk-edit" data-id="${c.id}">${esc(c.text)}</div>
       <div class="chunk-foot">
-        <button class="chunk-check" data-action="chunk-done" data-id="${c.id}" aria-pressed="${c.done}" aria-label="Done">${c.done ? icon('check', 11) : ''}</button>
-        <button class="icon-btn" data-action="chunk-menu" data-id="${c.id}" aria-label="More">${icon('more', 14)}</button>
+        <button class="chunk-check" data-action="chunk-done" data-id="${c.id}" aria-pressed="${c.done}" aria-label="${TD.t('Done')}">${c.done ? icon('check', 11) : ''}</button>
+        <button class="icon-btn" data-action="chunk-menu" data-id="${c.id}" aria-label="${TD.t('More')}">${icon('more', 14)}</button>
       </div>
     </div>`;
 
@@ -16,7 +16,7 @@
     const ws = U.weekStart(sel);
     const days = Array.from({ length: 7 }, (_, i) => U.addDays(ws, i));
     const we = days[6];
-    const range = `${U.fmtShort(ws)} – ${ws.slice(5, 7) === we.slice(5, 7) ? U.parse(we).getDate() : U.fmtShort(we)}`;
+    const range = U.fmtRange(ws, we);
     const all = days.flatMap(M.chunksOn);
     const col = (d) => {
       const list = M.chunksOn(d);
@@ -25,14 +25,14 @@
         <section class="bday ${d === today ? 'today' : ''}" data-date="${d}">
           <div class="bday-h"><b>${U.DOW[dt.getDay()]}</b> <span>${dt.getDate()}</span></div>
           <div class="bday-list" data-date="${d}">${list.map(card).join('')}</div>
-          <textarea class="board-add" rows="1" data-date="${d}" maxlength="300" placeholder="+" aria-label="Add on ${U.fmtLong(d)}"></textarea>
+          <textarea class="board-add" rows="1" data-date="${d}" maxlength="300" placeholder="+" aria-label="${TD.t('Add on {d}', { d: U.fmtLong(d) })}"></textarea>
         </section>`;
     };
     return `
       <div class="board-bar">
-        <button class="icon-btn" data-action="week" data-n="-7" aria-label="Previous week">${icon('left', 15)}</button>
+        <button class="icon-btn" data-action="week" data-n="-7" aria-label="${TD.t('Previous week')}">${icon('left', 15)}</button>
         <span class="board-range">${range}</span>
-        <button class="icon-btn" data-action="week" data-n="7" aria-label="Next week">${icon('right', 15)}</button>
+        <button class="icon-btn" data-action="week" data-n="7" aria-label="${TD.t('Next week')}">${icon('right', 15)}</button>
         ${all.length ? `<span class="board-sum">${all.filter((c) => c.done).length}/${all.length}</span>` : ''}
       </div>
       <div class="board">${days.map(col).join('')}</div>`;
@@ -95,16 +95,16 @@
     if (!c) return;
     const ws = U.weekStart(c.date);
     const dayLabel = (d) => `${U.DOW[U.parse(d).getDay()]} ${U.parse(d).getDate()}`;
-    TD.ui.menu('Block', [
-      { label: 'Move to…', run: () => TD.ui.menu('Move to', [
+    TD.ui.menu(TD.t('Block'), [
+      { label: TD.t('Move to…'), run: () => TD.ui.menu(TD.t('Move to'), [
         ...Array.from({ length: 7 }, (_, i) => U.addDays(ws, i)).filter((d) => d !== c.date).map((d) => ({ label: dayLabel(d), run: () => move(c, d) })),
-        { label: 'Next week, same day', run: () => move(c, U.addDays(c.date, 7)) },
+        { label: TD.t('Next week, same day'), run: () => move(c, U.addDays(c.date, 7)) },
       ]) },
-      { label: 'Color', run: () => TD.ui.menu('Color', [
-        { label: (c.color ? '' : '✓ ') + 'None', run: () => M.updateChunk(c.id, { color: null }) },
-        ...Object.keys(TD.COLORS).map((k) => ({ label: (c.color === k ? '✓ ' : '') + TD.COLOR_NAMES[k], run: () => M.updateChunk(c.id, { color: k }) })),
+      { label: TD.t('Color'), run: () => TD.ui.menu(TD.t('Color'), [
+        { label: (c.color ? '' : '✓ ') + TD.t('None'), run: () => M.updateChunk(c.id, { color: null }) },
+        ...Object.keys(TD.COLORS).map((k) => ({ label: (c.color === k ? '✓ ' : '') + TD.t(TD.COLOR_NAMES[k]), run: () => M.updateChunk(c.id, { color: k }) })),
       ]) },
-      { label: 'Delete', danger: true, run: () => M.removeChunk(c.id) },
+      { label: TD.t('Delete'), danger: true, run: () => M.removeChunk(c.id) },
     ]);
   };
 

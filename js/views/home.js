@@ -27,42 +27,42 @@
 
     const left = `
       <section class="panel">
-        <div class="ph"><span>note to self</span><span class="r">${msgCount > 1 ? `<button class="icon-btn" data-action="shuffle-msg" aria-label="Another">${icon('shuffle', 15)}</button>` : ''}</span></div>
+        <div class="ph"><span>${TD.t('note to self')}</span><span class="r">${msgCount > 1 ? `<button class="icon-btn" data-action="shuffle-msg" aria-label="${TD.t('Another')}">${icon('shuffle', 15)}</button>` : ''}</span></div>
         <div class="pb">
           ${msg
             ? `<p class="quote-text">${esc(msg.text)}</p><p class="quote-date">${U.fmtCreated(msg.createdAt)}</p>`
-            : `<p class="empty">Nothing yet · <a href="#notes">add</a></p>`}
+            : `<p class="empty">${TD.t('Nothing yet')} · <a href="#notes">${TD.t('add')}</a></p>`}
         </div>
       </section>
 
       ${minds.length
-        ? `<section class="panel"><div class="ph"><span>principles</span></div><div class="pb">${minds.map((n) => `<p class="mind-line">${esc(n.text)}</p>`).join('')}</div></section>`
+        ? `<section class="panel"><div class="ph"><span>${TD.t('principles')}</span></div><div class="pb">${minds.map((n) => `<p class="mind-line">${esc(n.text)}</p>`).join('')}</div></section>`
         : ''}
 
       <section class="panel">
-        <div class="ph"><span>glimmers</span><span>${TD.store.get().glimmers.length}</span></div>
-        <div class="pb"><button class="box-btn" data-action="open-box" aria-label="Open a random glimmer">${BOX}</button></div>
+        <div class="ph"><span>${TD.t('glimmers')}</span><span>${TD.store.get().glimmers.length}</span></div>
+        <div class="pb"><button class="box-btn" data-action="open-box" aria-label="${TD.t('Open a random glimmer')}">${BOX}</button></div>
       </section>
     `;
 
     const right = `
       <section class="panel">
-        <div class="ph"><span>tasks</span><span>${todos.filter((t) => t.done).length}/${todos.length}</span><span class="r"><a href="#todo">all</a></span></div>
+        <div class="ph"><span>${TD.t('tasks')}</span><span>${todos.filter((t) => t.done).length}/${todos.length}</span><span class="r"><a href="#todo">${TD.t('all')}</a></span></div>
         <div class="pb">
-          ${over.length ? `<div class="row-line"><span>${over.length} overdue</span><button class="btn" data-action="move-overdue">Move to today</button></div>` : ''}
-          ${todos.length ? `<ul>${todos.map((t) => TD.views.todoItem(t)).join('')}</ul>` : `<p class="empty">Nothing yet · <a href="#todo">add</a></p>`}
+          ${over.length ? `<div class="row-line"><span>${TD.t('{n} overdue', { n: over.length })}</span><button class="btn" data-action="move-overdue">${TD.t('Move to today')}</button></div>` : ''}
+          ${todos.length ? `<ul>${todos.map((t) => TD.views.todoItem(t)).join('')}</ul>` : `<p class="empty">${TD.t('Nothing yet')} · <a href="#todo">${TD.t('add')}</a></p>`}
         </div>
       </section>
 
       <section class="panel">
-        <div class="ph"><span>habits</span><span>${habits.filter((h) => M.isDone(h, today)).length}/${habits.length}</span><span class="r"><a href="#habits">all</a></span></div>
+        <div class="ph"><span>${TD.t('habits')}</span><span>${habits.filter((h) => M.isDone(h, today)).length}/${habits.length}</span><span class="r"><a href="#habits">${TD.t('all')}</a></span></div>
         <div class="pb">
-          ${habits.length ? `<ul>${habits.map((h) => TD.views.habitRow(h, today, true)).join('')}</ul>` : `<p class="empty">Nothing yet · <a href="#habits">add</a></p>`}
+          ${habits.length ? `<ul>${habits.map((h) => TD.views.habitRow(h, today, true)).join('')}</ul>` : `<p class="empty">${TD.t('Nothing yet')} · <a href="#habits">${TD.t('add')}</a></p>`}
         </div>
       </section>
     `;
 
-    return { title: 'Today', meta: U.fmtLong(today), actions: `<button class="icon-btn nav-gear" data-action="open-settings" aria-label="Settings">${icon('settings', 17)}</button>`, left, right };
+    return { title: TD.t('Today'), meta: U.fmtLong(today), actions: `<button class="icon-btn nav-gear" data-action="open-settings" aria-label="${TD.t('Settings')}">${icon('settings', 17)}</button>`, left, right };
   };
 
   /** 상자 열기: 행복 상자에서 랜덤으로 하나 */
@@ -74,7 +74,7 @@
       title: U.fmtCreated(g.createdAt),
       small: true,
       body: `${TD.views.glimmerBody(g)}
-        ${all.length > 1 ? `<div class="sheet-foot"><button class="btn" data-another>Another</button></div>` : ''}`,
+        ${all.length > 1 ? `<div class="sheet-foot"><button class="btn" data-another>${TD.t('Another')}</button></div>` : ''}`,
       onMount(sheet) {
         TD.media.hydrate(sheet);
         const b = sheet.querySelector('[data-another]');
@@ -86,9 +86,9 @@
   TD.actions['open-box'] = (el) => {
     if (!TD.store.get().glimmers.length)
       return TD.ui.modal({
-        title: 'glimmers',
+        title: TD.t('glimmers'),
         small: true,
-        body: `<p class="box-empty">The box is empty.</p><a class="btn" href="#glimmers" data-close>Add something good</a>`,
+        body: `<p class="box-empty">${TD.t('The box is empty.')}</p><a class="btn" href="#glimmers" data-close>${TD.t('Add something good')}</a>`,
       });
     el.classList.add('opening');
     setTimeout(() => {
