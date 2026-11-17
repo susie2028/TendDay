@@ -92,6 +92,13 @@ h1, h2, h3, p { margin: 0; }
 .box-btn:hover .lid { transform: translateY(-4px) rotate(-5deg); }
 .box-btn.opening .lid { transform: translate(-8px, -18px) rotate(-20deg); }
 .sheet.wide { width: min(560px, calc(100vw - 24px)); }
+.sheet.small { width: min(360px, calc(100vw - 32px)); }
+.sheet.small .sheet-head { padding: 8px 8px 8px 12px; }
+.sheet.small .g-media img, .sheet.small .g-media video, .sheet.small .g-yt img { max-height: 42vh; }
+.sheet.small .g-text { font-size: 19px; }
+.x { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 3px; color: var(--text-2); }
+.x:hover { background: var(--field); color: var(--text); }
+.box-empty { font-size: 17px; color: var(--text-2); padding: 6px 0 2px; }
 
 /* todo */
 .todo { --c: var(--accent); display: flex; align-items: flex-start; gap: 10px; padding: 5px 0; }
@@ -300,5 +307,7 @@ textarea.input { height: auto; min-height: 90px; padding: 8px 10px; resize: vert
   .g-text { font-size: 20px; }
   .overlay { place-items: end center; }
   .sheet, .sheet.wide { width: 100%; max-height: 90vh; border-radius: 6px 6px 0 0; padding-bottom: env(safe-area-inset-bottom); }
+  .overlay:has(.sheet.small) { place-items: center; }
+  .sheet.small { width: min(360px, calc(100vw - 32px)); border-radius: 4px; padding-bottom: 0; }
   .toast { bottom: calc(76px + env(safe-area-inset-bottom)); }
 }

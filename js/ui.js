@@ -58,10 +58,12 @@
       const body = refreshFn ? refreshFn() : o.body;
       root().innerHTML = `
         <div class="overlay">
-          <div class="sheet ${o.wide ? 'wide' : ''}" role="dialog" aria-modal="true" aria-label="${esc(o.title)}">
+          <div class="sheet ${o.wide ? 'wide' : ''} ${o.small ? 'small' : ''}" role="dialog" aria-modal="true" aria-label="${esc(o.title)}">
             <div class="sheet-head">
               <span>${esc(o.title)}</span>
-              <button class="close" data-close aria-label="Close"><span class="key">Esc</span>Close ×</button>
+              ${o.small
+                ? `<button class="x" data-close aria-label="Close">${TD.icon('close', 16)}</button>`
+                : `<button class="close" data-close aria-label="Close"><span class="key">Esc</span>Close ×</button>`}
             </div>
             <div class="sheet-body">${body}</div>
           </div>

@@ -72,7 +72,7 @@
     const g = pool[Math.floor(Math.random() * pool.length)];
     TD.ui.modal({
       title: U.fmtCreated(g.createdAt),
-      wide: true,
+      small: true,
       body: `${TD.views.glimmerBody(g)}
         ${all.length > 1 ? `<div class="sheet-foot"><button class="btn" data-another>Another</button></div>` : ''}`,
       onMount(sheet) {
@@ -84,7 +84,12 @@
   }
 
   TD.actions['open-box'] = (el) => {
-    if (!TD.store.get().glimmers.length) return (location.hash = '#glimmers');
+    if (!TD.store.get().glimmers.length)
+      return TD.ui.modal({
+        title: 'glimmers',
+        small: true,
+        body: `<p class="box-empty">The box is empty.</p><a class="btn" href="#glimmers" data-close>Add something good</a>`,
+      });
     el.classList.add('opening');
     setTimeout(() => {
       el.classList.remove('opening');
