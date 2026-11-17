@@ -12,7 +12,7 @@
     'Previous month': '지난달', 'Next month': '다음 달', 'Minus': '빼기', 'Plus': '더하기', 'today': '오늘',
     'Could not save — storage full': '저장 공간이 꽉 차서 저장하지 못했어요',
     // 오늘
-    'note to self': '나에게 한마디', 'principles': '마음가짐', 'glimmers': '행복 상자', 'tasks': '할 일', 'habits': '습관',
+    'note to self': '메모', 'principles': '기억할 것', 'glimmers': '행복 상자', 'tasks': '할 일', 'habits': '습관',
     '{n} overdue': '밀린 일 {n}개', 'Move to today': '오늘로 옮기기', 'Open a random glimmer': '행복 상자 열기',
     'The box is empty.': '상자가 비어 있어요.', 'Add something good': '좋았던 순간 담기',
     // 할 일
@@ -32,9 +32,9 @@
     'cups': '잔', 'Daily': '매일', 'Weekdays': '평일', 'Weekends': '주말', 'Morning': '아침', 'Anytime': '언제든', 'Evening': '저녁',
     "'{h}' and its history will be deleted.": "'{h}'와 지금까지의 기록이 삭제돼요.",
     // 기록
-    'write': '쓰기', 'notes to self': '나에게 한마디', 'Notes to self': '나에게 한마디', 'Principles': '마음가짐',
+    'write': '쓰기', 'notes to self': '메모', 'Notes to self': '메모', 'Principles': '기억할 것',
     'pinned {n}/{m}': '고정 {n}/{m}', 'pinned': '고정', 'hidden': '숨김', 'Pin': '고정', 'Show': '보이기', 'Hide': '숨기기',
-    'Note to self': '나에게 한마디', 'Principle': '마음가짐', 'Delete this?': '삭제할까요?', 'Max {n} pinned': '최대 {n}개까지 고정할 수 있어요',
+    'Note to self': '메모', 'Principle': '기억할 것', 'Delete this?': '삭제할까요?', 'Max {n} pinned': '최대 {n}개까지 고정할 수 있어요',
     // 집중
     'focus': '집중', 'break': '휴식', 'Break': '휴식', '{n} min': '{n}분', 'Start': '시작', 'Pause': '일시정지', 'Resume': '계속',
     'Reset': '처음으로', 'Skip to break': '휴식으로 넘기기', 'Skip break': '휴식 건너뛰기', 'minutes': '시간 설정',
