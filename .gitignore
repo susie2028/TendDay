@@ -1,0 +1,8 @@
+.DS_Store
+# 이전 디자인용 이미지 (지금은 안 씀)
+img/leaf-*.png
+img/note-*.jpg
+img/paper-*.jpg
+img/tape-*.png
+js/views/garden.js
+js/views/mind.js
