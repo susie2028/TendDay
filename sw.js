@@ -26,3 +26,14 @@ self.addEventListener('fetch', (e) => {
       .catch(() => caches.match(req).then((r) => r || caches.match('./index.html')))
   );
 });
+
+// 뽀모도로 알림을 누르면 앱을 앞으로
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  e.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+      const c = list.find((w) => 'focus' in w);
+      return c ? c.focus() : self.clients.openWindow('./#focus');
+    })
+  );
+});

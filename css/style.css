@@ -271,6 +271,23 @@ textarea.input { height: auto; min-height: 90px; padding: 8px 10px; resize: vert
   .draw .ink-fill { opacity: 1; }
 }
 
+
+/* ---------- focus (pomodoro) ---------- */
+.pomo .pb { padding: 18px 16px 18px; }
+.pomo-time { font-size: 76px; line-height: 1; letter-spacing: -1px; text-align: center; font-variant-numeric: tabular-nums; padding: 18px 0 20px; }
+.pomo-track { height: 2px; background: var(--line); margin: 0 4px 18px; }
+.pomo-bar { height: 100%; background: var(--text); transition: width .5s linear; }
+.pomo-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.pomo-btns .btn { min-width: 86px; }
+.pomo-btns .btn[disabled] { opacity: .45; }
+.pomo-set { display: flex; flex-direction: column; gap: 14px; }
+.stepper { display: flex; align-items: center; gap: 4px; }
+.stepper .icon-btn { width: 34px; height: 30px; font-family: var(--mono); font-size: 12px; color: var(--text-2); border: 1px solid var(--line); border-radius: 3px; background: var(--field); }
+.stepper .input.num { width: 64px; flex: 0 0 64px; text-align: center; font-variant-numeric: tabular-nums; -moz-appearance: textfield; }
+.stepper .input.num::-webkit-inner-spin-button, .stepper .input.num::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.pomo-dots { display: flex; flex-wrap: wrap; gap: 6px; }
+.pomo-dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--text); }
+
 /* ---------- mobile ---------- */
 .nav-gear { display: none; }
 @media (max-width: 760px) {
@@ -287,7 +304,7 @@ textarea.input { height: auto; min-height: 90px; padding: 8px 10px; resize: vert
   .nav { position: static; display: flex; align-items: stretch; overflow-x: auto; scrollbar-width: none; padding: 0 4px env(safe-area-inset-bottom); border: 0; border-top: 1px solid var(--line); border-radius: 0; box-shadow: none; }
   .nav::-webkit-scrollbar { display: none; }
   .nav-top, .nav hr, .nav a[data-action="open-settings"] { display: none; }
-  .nav a { flex: 1 0 auto; display: grid; place-items: center; min-height: 54px; padding: 0 9px; font-size: 12px; }
+  .nav a { flex: 1 0 auto; display: grid; place-items: center; min-height: 54px; padding: 0 3px; font-size: 11.5px; letter-spacing: -0.2px; }
   .nav a span { text-decoration: none; }
   .nav a.active span::before { content: none; }
   .nav a.active span { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 5px; text-decoration-thickness: 1.5px; }
@@ -309,5 +326,8 @@ textarea.input { height: auto; min-height: 90px; padding: 8px 10px; resize: vert
   .sheet, .sheet.wide { width: 100%; max-height: 90vh; border-radius: 6px 6px 0 0; padding-bottom: env(safe-area-inset-bottom); }
   .overlay:has(.sheet.small) { place-items: center; }
   .sheet.small { width: min(360px, calc(100vw - 32px)); border-radius: 4px; padding-bottom: 0; }
+  .pomo-time { font-size: 64px; }
+  .stepper .icon-btn { width: 40px; height: 36px; }
+  .stepper .input.num { height: 36px; }
   .toast { bottom: calc(76px + env(safe-area-inset-bottom)); }
 }

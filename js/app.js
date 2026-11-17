@@ -8,6 +8,7 @@
     { id: 'habits', label: 'Habits' },
     { id: 'notes', label: 'Notes' },
     { id: 'decide', label: 'Decide' },
+    { id: 'focus', label: 'Focus' },
     { id: 'glimmers', label: 'Glimmers' },
   ];
 
