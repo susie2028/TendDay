@@ -4,7 +4,7 @@
   const A = TD.actions;
 
   const card = (c) => `
-    <div class="chunk ${c.done ? 'done' : ''} ${c.color ? 'tinted' : ''}" draggable="true" data-id="${c.id}" ${c.color ? `style="--c:${TD.COLORS[c.color]}"` : ''}>
+    <div class="chunk ${c.done ? 'done' : ''} ${c.color ? 'tinted' : ''}" data-id="${c.id}" ${c.color ? `style="--c:${TD.COLORS[c.color]}"` : ''}>
       <div class="chunk-text" data-action="chunk-edit" data-id="${c.id}">${esc(c.text)}</div>
       <div class="chunk-foot">
         <button class="chunk-check" data-action="chunk-done" data-id="${c.id}" aria-pressed="${c.done}" aria-label="Done">${c.done ? icon('check', 11) : ''}</button>
@@ -24,7 +24,7 @@
       return `
         <section class="bday ${d === today ? 'today' : ''}" data-date="${d}">
           <div class="bday-h"><b>${U.DOW[dt.getDay()]}</b> <span>${dt.getDate()}</span></div>
-          <div class="bday-list">${list.map(card).join('')}</div>
+          <div class="bday-list" data-date="${d}">${list.map(card).join('')}</div>
           <textarea class="board-add" rows="1" data-date="${d}" maxlength="300" placeholder="+" aria-label="Add on ${U.fmtLong(d)}"></textarea>
         </section>`;
     };
@@ -108,34 +108,4 @@
     ]);
   };
 
-  /* 맥에서는 끌어서 다른 요일로 옮길 수 있어요 */
-  let dragId = null;
-  document.addEventListener('dragstart', (e) => {
-    const el = e.target.closest && e.target.closest('.chunk');
-    if (!el) return;
-    dragId = el.dataset.id;
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', dragId);
-    el.classList.add('dragging');
-  });
-  document.addEventListener('dragend', () => {
-    dragId = null;
-    document.querySelectorAll('.dragging, .drop').forEach((x) => x.classList.remove('dragging', 'drop'));
-  });
-  document.addEventListener('dragover', (e) => {
-    const day = dragId && e.target.closest && e.target.closest('.bday');
-    if (!day) return;
-    e.preventDefault();
-    document.querySelectorAll('.bday.drop').forEach((x) => x !== day && x.classList.remove('drop'));
-    day.classList.add('drop');
-  });
-  document.addEventListener('drop', (e) => {
-    const day = dragId && e.target.closest && e.target.closest('.bday');
-    if (!day) return;
-    e.preventDefault();
-    const c = M.chunk(dragId);
-    dragId = null;
-    if (c && c.date !== day.dataset.date) move(c, day.dataset.date);
-    else TD.app.render();
-  });
 })();

@@ -326,6 +326,17 @@ textarea.input { height: auto; min-height: 90px; padding: 8px 10px; resize: vert
 .note-input { display: block; width: 100%; resize: none; overflow: hidden; font: inherit; padding: 0 0 2px; margin: 0; border: 0; border-bottom: 1px solid var(--text-3); background: transparent; outline: none; color: var(--text); white-space: pre-wrap; }
 .note .text { cursor: text; }
 
+/* ---------- reorder (long press / drag) ---------- */
+.todo, .chunk, .cat-head, .nav, .ph, .bday-h { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.todo-input, .chunk-input, .note-input { -webkit-user-select: text; user-select: text; }
+.sort-ghost { position: fixed !important; z-index: 60; margin: 0 !important; pointer-events: none; background: var(--panel); border-radius: 3px; box-shadow: 0 8px 24px rgba(40, 35, 25, .18); transform: scale(1.02); }
+.chunk.sort-ghost { background: var(--field); }
+.chunk.tinted.sort-ghost { background: color-mix(in srgb, var(--c) 16%, var(--panel)); }
+.sort-ph { list-style: none; border: 1px dashed var(--text-3); border-radius: 3px; box-sizing: border-box; }
+body.sorting, body.sorting * { cursor: grabbing !important; }
+body.sorting .sort-list { min-height: 30px; }
+body.sorting .bday-list { min-height: 50px; }
+
 /* ---------- mobile ---------- */
 .nav-gear { display: none; }
 @media (max-width: 760px) {

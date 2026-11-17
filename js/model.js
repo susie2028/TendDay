@@ -38,6 +38,14 @@
     S.update((s) => (s.board = s.board || []).push({ id: U.uid(), text, date, color: null, done: false, order: Date.now() }));
   M.updateChunk = (id, patch) => S.update((s) => Object.assign(s.board.find((x) => x.id === id), patch));
   M.removeChunk = (id) => S.update((s) => (s.board = s.board.filter((x) => x.id !== id)));
+  /** 끌어서 놓은 뒤: 그 목록의 순서대로 다시 번호를 매겨요 */
+  M.reorder = (key, ids, patch) =>
+    S.update((s) =>
+      ids.forEach((id, i) => {
+        const x = s[key].find((t) => t.id === id);
+        if (x) Object.assign(x, patch, { order: i });
+      })
+    );
   /** 오늘 이전 날짜인데 아직 못 한 일 */
   M.overdue = () => {
     const t = U.today();

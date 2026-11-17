@@ -4,7 +4,7 @@
   const A = TD.actions;
 
   TD.views.todoItem = (t, showDate) => `
-    <li class="todo ${t.done ? 'done' : ''}" style="--c:${M.catColor(t.categoryId)}">
+    <li class="todo ${t.done ? 'done' : ''}" data-id="${t.id}" style="--c:${M.catColor(t.categoryId)}">
       <button class="check" data-action="toggle-todo" data-id="${t.id}" aria-pressed="${t.done}" aria-label="${esc(t.text)}">${icon('check', 11)}</button>
       <button class="todo-text" data-action="todo-edit" data-id="${t.id}">${esc(t.text)}${showDate ? `<span class="todo-date">${U.fmtShort(t.date)}</span>` : ''}</button>
       <button class="icon-btn todo-more" data-action="todo-menu" data-id="${t.id}" aria-label="More">${icon('more', 15)}</button>
@@ -69,12 +69,12 @@
         const adding = TD.state.addingCat === c.id;
         const col = TD.COLORS[c.color] || TD.COLORS.gray;
         return `
-          <div class="cat" style="--c:${col}">
+          <div class="cat" style="--c:${col}" data-cat="${c.id}">
             <div class="cat-head">
               <button class="cat-pill" data-action="cat-quick" data-id="${c.id}">${esc(c.name)}</button>
               <button class="icon-btn" data-action="add-todo-open" data-cat="${c.id}" aria-label="Add to ${esc(c.name)}">${icon('plus', 14)}</button>
             </div>
-            <ul>
+            <ul class="sort-list" data-cat="${c.id}">
               ${items.map((t) => TD.views.todoItem(t)).join('')}
               ${adding ? `<li class="todo" style="--c:${col}"><span class="check ghost"></span><input class="add-input" data-enter="add-todo" data-cat="${c.id}" maxlength="200" aria-label="New ${esc(c.name)} task"></li>` : ''}
             </ul>
